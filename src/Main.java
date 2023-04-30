@@ -2,6 +2,7 @@
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
         List<Gasto> listaGastos = new ArrayList<>();
         List<Ganho> listaGanhos = new ArrayList<>();
+        List<Gasto> filtroData = new ArrayList<>();
         Gasto novoGasto = null;
         Ganho novoGanho = null;
         System.out.println("Gestao Financeira");
@@ -44,11 +46,13 @@ public class Main {
                 if(t > 0 && t < 6 ){
                     System.out.println("Adicionar Gasto");
                     System.out.println("---------------");
-                    System.out.print("Digite a data no formato ddMMyyyy: ");
-                    int data = enter.nextInt();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-                    LocalDate d = LocalDate.parse(String.valueOf(data), formatter);
-                    enter.nextLine();
+                    System.out.print("Digite a data no formato dd MM yyyy(separado por espacos): ");
+                    
+                    int diaGas = enter.nextInt();
+                    int mesGas = enter.nextInt();
+                    int anoGas = enter.nextInt();
+                    LocalDate dataGas = LocalDate.of(anoGas, mesGas, diaGas);
+                    System.out.println(dataGas);
              
                     System.out.print("Informe o valor: ");
                     double v = enter.nextDouble();
@@ -59,7 +63,6 @@ public class Main {
                     System.out.println("3 - Debito");
                     System.out.println("4 - Outras");
                     int f = enter.nextInt();
-                    enter.nextLine();
                     
                     if (f <= 0 || f > 4){
                         limparConsole();
@@ -69,7 +72,7 @@ public class Main {
                         System.out.println("Digite o nome do gasto(ex:Celesc): ");
                         String n = enter.nextLine();
                     
-                        novoGasto = new Gasto(n,t,d,f,v);
+                        novoGasto = new Gasto(n,t,dataGas,f,v);
                         listaGastos.add(novoGasto);
                         limparConsole();
                         main(new String[]{"Voltar"});
@@ -101,12 +104,13 @@ public class Main {
                 if (tGanho > 0 && tGanho < 5){
                     System.out.println("Adicionar Ganho");
                     System.out.println("---------------");
-                    System.out.print("Digite a data no formato ddMMyyyy: ");
+                    System.out.print("Digite a data no formato dd MM yyyy(separado por espacos): ");
                     
-                    int data = enter.nextInt();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-                    LocalDate dGanho = LocalDate.parse(String.valueOf(data), formatter);
-                    enter.nextLine();
+                    int diaGan = enter.nextInt();
+                    int mesGan = enter.nextInt();
+                    int anoGan = enter.nextInt();
+                    LocalDate dataGan = LocalDate.of(anoGan, mesGan, diaGan);
+                    System.out.println(dataGan);
                 
                     System.out.print("Digite a origem(ex:ProjetoA): ");
                     String nGanho = enter.nextLine();
@@ -115,7 +119,7 @@ public class Main {
                     int vGanho = enter.nextInt();
                     enter.nextLine();
                     
-                    novoGanho = new Ganho(nGanho, tGanho, vGanho,dGanho);
+                    novoGanho = new Ganho(nGanho, tGanho, vGanho,dataGan);
                     listaGanhos.add(novoGanho);
                     limparConsole();
                     main(new String[]{"Voltar"});
@@ -131,6 +135,54 @@ public class Main {
                     System.out.println("VOLTANDO..");
                     main(new String[]{"Voltar"});
                 }
+                break;
+            case 3:
+                System.out.println("Relatorio de gastos");
+                System.out.println("------------------");
+                System.out.print("Digite o mes (1-12) e o ano (yyyy) separados por um espaco: ");
+                
+                int mes = enter.nextInt();
+                int ano = enter.nextInt();
+                int dia = 1;
+                LocalDate data = LocalDate.of(ano, mes, dia);
+
+                double totalGasto = novoGasto.buscarGastosMesAno(listaGastos, data);
+                System.out.println("Relatorio de gastos");
+                System.out.println("------------------");
+                System.out.println("Total de gastos do periodo: "+ totalGasto);
+                break;
+            case 4:
+                System.out.println("Relatorio de ganhos");
+                System.out.println("------------------");
+                System.out.print("Digite o mes (1-12) e o ano (yyyy) separados por um espaco: ");
+                
+                int mesGan = enter.nextInt();
+                int anoGan = enter.nextInt();
+                int diaGan = 1;
+                LocalDate dataGan = LocalDate.of(anoGan, mesGan, diaGan);
+
+                double totalGanho = novoGanho.buscarGanhosMesAno(listaGanhos, dataGan);
+                System.out.println("Relatorio de ganhos");
+                System.out.println("------------------");
+                System.out.println("Total de ganhos do periodo: "+ totalGanho);
+                break;
+            case 5:
+                System.out.println("Relatorio mensal");
+                System.out.println("----------------");
+                System.out.print("Digite o mes (1-12) e o ano (yyyy) separados por um espaco: ");
+                
+                int mesRe = enter.nextInt();
+                int anoRe = enter.nextInt();
+                int diaRe = 1;
+                LocalDate dataRe = LocalDate.of(anoRe, mesRe, diaRe);
+                double totalGanRe = novoGanho.buscarGanhosMesAno(listaGanhos, dataRe);
+                double totalGasRe = novoGanho.buscarGanhosMesAno(listaGanhos, dataRe);
+                double saldo = totalGanRe - totalGasRe;
+                System.out.println("Relatorio do periodo");
+                System.out.println("--------------------");
+                System.out.println("Total de ganhos do periodo: "+ totalGanRe);
+                System.out.println("Total de gastos do periodo: "+ totalGasRe);
+                System.out.println("Saldo: "+ saldo);
                 break;
             case 6:
                 break;

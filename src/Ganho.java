@@ -1,5 +1,6 @@
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -39,6 +40,17 @@ public class Ganho {
 
     public LocalDate getData() {
         return data;
+    }
+    
+    public double buscarGanhosMesAno(List<Ganho> listaGanhos, LocalDate data) {
+    double totalGastos = 0.0;
+    for (Ganho g : listaGanhos) {
+        LocalDate dataGasto = g.getData();
+            if (dataGasto.getMonth() == data.getMonth() && dataGasto.getYear() == data.getYear()) {
+                totalGastos += g.getTipo().getValor();
+            }
+        }
+        return totalGastos;
     }
     
     
